@@ -3,6 +3,7 @@ package ru.samsung.spaceinvaders;
 import static ru.samsung.spaceinvaders.Main.*;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -50,7 +51,7 @@ public class ScreenGame implements Screen {
 
     @Override
     public void show() {
-
+        Gdx.input.setInputProcessor(new SpaceInputProcessor());
     }
 
     @Override
@@ -102,5 +103,60 @@ public class ScreenGame implements Screen {
     public void dispose() {
         imgBG.dispose();
         imgShipsAtlas.dispose();
+    }
+
+    class SpaceInputProcessor implements InputProcessor{
+
+        @Override
+        public boolean keyDown(int keycode) {
+            return false;
+        }
+
+        @Override
+        public boolean keyUp(int keycode) {
+            return false;
+        }
+
+        @Override
+        public boolean keyTyped(char character) {
+            return false;
+        }
+
+        @Override
+        public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+            touch.set(screenX, screenY, 0);
+            camera.unproject(touch);
+            ship.touch(touch.x, touch.y);
+            return false;
+        }
+
+        @Override
+        public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+            ship.stop();
+            return false;
+        }
+
+        @Override
+        public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
+            return false;
+        }
+
+        @Override
+        public boolean touchDragged(int screenX, int screenY, int pointer) {
+            touch.set(screenX, screenY, 0);
+            camera.unproject(touch);
+            ship.touch(touch.x, touch.y);
+            return false;
+        }
+
+        @Override
+        public boolean mouseMoved(int screenX, int screenY) {
+            return false;
+        }
+
+        @Override
+        public boolean scrolled(float amountX, float amountY) {
+            return false;
+        }
     }
 }
