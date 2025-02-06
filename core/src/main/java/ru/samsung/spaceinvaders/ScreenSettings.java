@@ -3,6 +3,7 @@ package ru.samsung.spaceinvaders;
 import static ru.samsung.spaceinvaders.Main.SCR_HEIGHT;
 import static ru.samsung.spaceinvaders.Main.SCR_WIDTH;
 import static ru.samsung.spaceinvaders.Main.isAccelerometerOn;
+import static ru.samsung.spaceinvaders.Main.isGyroscopeOn;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -26,6 +27,7 @@ public class ScreenSettings implements Screen {
 
     SpaceButton btnBack;
     SpaceButton btnAccelerometer;
+    SpaceButton btnGyroscope;
 
     public ScreenSettings(Main main) {
         this.main = main;
@@ -37,6 +39,7 @@ public class ScreenSettings implements Screen {
         imgBG = new Texture("bg2.jpg");
 
         btnAccelerometer = new SpaceButton(font, isAccelerometerOn?"Accelerometer ON":"Accelerometer OFF", 1100);
+        btnGyroscope = new SpaceButton(font, isGyroscopeOn?"Gyroscope ON":"Gyroscope OFF", 1000);
         btnBack = new SpaceButton(font, "Back", 300);
     }
 
@@ -55,7 +58,21 @@ public class ScreenSettings implements Screen {
             if(btnAccelerometer.hit(touch)){
                 if (Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer)) {
                     isAccelerometerOn = !isAccelerometerOn;
+                    if(isAccelerometerOn) {
+                        isGyroscopeOn = false;
+                        btnGyroscope.setText("Gyroscope OFF");
+                    }
                     btnAccelerometer.setText(isAccelerometerOn ? "Accelerometer ON" : "Accelerometer OFF");
+                }
+            }
+            if(btnGyroscope.hit(touch)){
+                if (Gdx.input.isPeripheralAvailable(Input.Peripheral.Gyroscope)) {
+                    isGyroscopeOn = !isGyroscopeOn;
+                    if(isGyroscopeOn) {
+                        isAccelerometerOn = false;
+                        btnAccelerometer.setText("Accelerometer OFF");
+                    }
+                    btnGyroscope.setText(isGyroscopeOn ? "Gyroscope ON" : "Gyroscope OFF");
                 }
             }
 
@@ -70,6 +87,7 @@ public class ScreenSettings implements Screen {
         batch.draw(imgBG, 0, 0, SCR_WIDTH, SCR_HEIGHT);
         font.draw(batch, "Settings", 0, 1400, SCR_WIDTH, Align.center, true);
         btnAccelerometer.font.draw(batch, btnAccelerometer.text, btnAccelerometer.x, btnAccelerometer.y);
+        btnGyroscope.font.draw(batch, btnGyroscope.text, btnGyroscope.x, btnGyroscope.y);
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
     }

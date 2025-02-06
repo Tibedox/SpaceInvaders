@@ -71,6 +71,10 @@ public class ScreenGame implements Screen {
             ship.vx = -Gdx.input.getAccelerometerX()*2;
             ship.vy = -Gdx.input.getAccelerometerY()*2;
         }
+        if(isGyroscopeOn){
+            ship.vx = -Gdx.input.getGyroscopeX()*2;
+            ship.vy = -Gdx.input.getGyroscopeY()*2;
+        }
 
         // события
         for(Space s: space) s.move();
@@ -80,7 +84,7 @@ public class ScreenGame implements Screen {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         for(Space s: space) batch.draw(imgBG, s.x, s.y, s.width, s.height);
-        font.draw(batch, z, 0, 1000);
+        //font.draw(batch, z, 0, 1000);
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
