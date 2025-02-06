@@ -2,14 +2,17 @@ package ru.samsung.spaceinvaders;
 
 import static ru.samsung.spaceinvaders.Main.SCR_HEIGHT;
 import static ru.samsung.spaceinvaders.Main.SCR_WIDTH;
+import static ru.samsung.spaceinvaders.Main.isAccelerometerOn;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 
 public class ScreenSettings implements Screen {
     Main main;
@@ -22,6 +25,7 @@ public class ScreenSettings implements Screen {
     Texture imgBG;
 
     SpaceButton btnBack;
+    SpaceButton btnAccelerometer;
 
     public ScreenSettings(Main main) {
         this.main = main;
@@ -32,7 +36,8 @@ public class ScreenSettings implements Screen {
 
         imgBG = new Texture("bg2.jpg");
 
-        btnBack = new SpaceButton(font, "Back", 350, 300);
+        btnAccelerometer = new SpaceButton(font, isAccelerometerOn?"Accelerometer ON":"Accelerometer OFF", 1100);
+        btnBack = new SpaceButton(font, "Back", 300);
     }
 
     @Override
@@ -47,7 +52,14 @@ public class ScreenSettings implements Screen {
             touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touch);
 
-            if(btnBack.hit(touch.x, touch.y)){
+            if(btnAccelerometer.hit(touch)){
+                if (Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer)) {
+                    isAccelerometerOn = !isAccelerometerOn;
+                    btnAccelerometer.setText(isAccelerometerOn ? "Accelerometer ON" : "Accelerometer OFF");
+                }
+            }
+
+            if(btnBack.hit(touch)){
                 main.setScreen(main.screenMenu);
             }
         }
@@ -56,7 +68,8 @@ public class ScreenSettings implements Screen {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         batch.draw(imgBG, 0, 0, SCR_WIDTH, SCR_HEIGHT);
-        font.draw(batch, "Settings", 350, 1400);
+        font.draw(batch, "Settings", 0, 1400, SCR_WIDTH, Align.center, true);
+        btnAccelerometer.font.draw(batch, btnAccelerometer.text, btnAccelerometer.x, btnAccelerometer.y);
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
     }

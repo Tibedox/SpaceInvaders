@@ -56,6 +56,7 @@ public class ScreenGame implements Screen {
 
     @Override
     public void render(float delta) {
+        String z="ACC";
         // касания
         if(Gdx.input.justTouched()){
             touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -64,6 +65,9 @@ public class ScreenGame implements Screen {
             if(btnBack.hit(touch.x, touch.y)){
                 main.setScreen(main.screenMenu);
             }
+        }
+        if(isAccelerometerOn){
+            z="x:"+Gdx.input.getAccelerometerX()+"\ny:"+Gdx.input.getAccelerometerY()+"\nz:"+Gdx.input.getAccelerometerZ();
         }
 
         // события
@@ -74,6 +78,7 @@ public class ScreenGame implements Screen {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         for(Space s: space) batch.draw(imgBG, s.x, s.y, s.width, s.height);
+        font.draw(batch, z, 0, 1000);
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
@@ -126,7 +131,7 @@ public class ScreenGame implements Screen {
         public boolean touchDown(int screenX, int screenY, int pointer, int button) {
             touch.set(screenX, screenY, 0);
             camera.unproject(touch);
-            ship.touch(touch.x, touch.y);
+            ship.touch(touch);
             return false;
         }
 
@@ -145,7 +150,7 @@ public class ScreenGame implements Screen {
         public boolean touchDragged(int screenX, int screenY, int pointer) {
             touch.set(screenX, screenY, 0);
             camera.unproject(touch);
-            ship.touch(touch.x, touch.y);
+            ship.touch(touch);
             return false;
         }
 

@@ -1,5 +1,8 @@
 package ru.samsung.spaceinvaders;
 
+import static ru.samsung.spaceinvaders.Main.*;
+
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class Ship extends SpaceObject{
@@ -16,6 +19,26 @@ public class Ship extends SpaceObject{
     public void move() {
         super.move();
         changePhase();
+        outOfScreen();
+    }
+
+    private void outOfScreen(){
+        if(x < width/2){
+            vx = 0;
+            x = width/2;
+        }
+        if(x > SCR_WIDTH - width/2){
+            vx = 0;
+            x = SCR_WIDTH - width/2;
+        }
+        if(y < height/2){
+            vy = 0;
+            y = height/2;
+        }
+        if(y > SCR_HEIGHT - height/2){
+            vy = 0;
+            y = SCR_HEIGHT - height/2;
+        }
     }
 
     private void changePhase(){
@@ -28,6 +51,11 @@ public class Ship extends SpaceObject{
     public void touch(float tx, float ty) {
         vx = (tx - x)/50;
         vy = (ty - y)/50;
+    }
+
+    public void touch(Vector3 t) {
+        vx = (t.x - x)/50;
+        vy = (t.y - y)/50;
     }
 
     public void stop() {
