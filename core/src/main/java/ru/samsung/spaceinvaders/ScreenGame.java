@@ -56,7 +56,7 @@ public class ScreenGame implements Screen {
 
     @Override
     public void render(float delta) {
-        String z="ACC";
+        //String z="ACC";
         // касания
         if(Gdx.input.justTouched()){
             touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -67,7 +67,9 @@ public class ScreenGame implements Screen {
             }
         }
         if(isAccelerometerOn){
-            z="x:"+Gdx.input.getAccelerometerX()+"\ny:"+Gdx.input.getAccelerometerY()+"\nz:"+Gdx.input.getAccelerometerZ();
+            //z="x:"+Gdx.input.getAccelerometerX()+"\ny:"+Gdx.input.getAccelerometerY()+"\nz:"+Gdx.input.getAccelerometerZ();
+            ship.vx = -Gdx.input.getAccelerometerX()*2;
+            ship.vy = -Gdx.input.getAccelerometerY()*2;
         }
 
         // события
