@@ -34,7 +34,7 @@ public class ScreenGame implements Screen {
         batch = main.batch;
         camera = main.camera;
         touch = main.touch;
-        font = main.font;
+        font = main.font90yellow;
 
         imgBG = new Texture("bg0.jpg");
         imgShipsAtlas = new Texture("ships_atlas.png");
@@ -66,14 +66,14 @@ public class ScreenGame implements Screen {
                 main.setScreen(main.screenMenu);
             }
         }
-        if(isAccelerometerOn){
+        if(controls == ACCELEROMETER){
             //z="x:"+Gdx.input.getAccelerometerX()+"\ny:"+Gdx.input.getAccelerometerY()+"\nz:"+Gdx.input.getAccelerometerZ();
-            ship.vx = -Gdx.input.getAccelerometerX()*2;
-            ship.vy = -Gdx.input.getAccelerometerY()*2;
+            ship.vx = -Gdx.input.getAccelerometerX()*10;
+            ship.vy = -Gdx.input.getAccelerometerY()*10;
         }
-        if(isGyroscopeOn){
-            ship.vx = -Gdx.input.getGyroscopeX()*2;
-            ship.vy = -Gdx.input.getGyroscopeY()*2;
+        if(controls == GYROSCOPE){
+            ship.vx = -Gdx.input.getGyroscopeX()*10;
+            ship.vy = -Gdx.input.getGyroscopeY()*10;
         }
 
         // события
@@ -135,9 +135,11 @@ public class ScreenGame implements Screen {
 
         @Override
         public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-            touch.set(screenX, screenY, 0);
-            camera.unproject(touch);
-            ship.touch(touch);
+            if(controls == SCREEN) {
+                touch.set(screenX, screenY, 0);
+                camera.unproject(touch);
+                ship.touch(touch);
+            }
             return false;
         }
 
@@ -154,9 +156,11 @@ public class ScreenGame implements Screen {
 
         @Override
         public boolean touchDragged(int screenX, int screenY, int pointer) {
-            touch.set(screenX, screenY, 0);
-            camera.unproject(touch);
-            ship.touch(touch);
+            if(controls == SCREEN) {
+                touch.set(screenX, screenY, 0);
+                camera.unproject(touch);
+                ship.touch(touch);
+            }
             return false;
         }
 

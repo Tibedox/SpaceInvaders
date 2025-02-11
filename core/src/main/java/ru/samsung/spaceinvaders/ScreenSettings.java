@@ -1,9 +1,6 @@
 package ru.samsung.spaceinvaders;
 
-import static ru.samsung.spaceinvaders.Main.SCR_HEIGHT;
-import static ru.samsung.spaceinvaders.Main.SCR_WIDTH;
-import static ru.samsung.spaceinvaders.Main.isAccelerometerOn;
-import static ru.samsung.spaceinvaders.Main.isGyroscopeOn;
+import static ru.samsung.spaceinvaders.Main.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -21,26 +18,33 @@ public class ScreenSettings implements Screen {
     public SpriteBatch batch;
     public OrthographicCamera camera;
     public Vector3 touch;
-    public BitmapFont font;
+    public BitmapFont font90yellow, font90gray;
 
     Texture imgBG;
 
-    SpaceButton btnBack;
+    SpaceButton btnControls;
+    SpaceButton btnScreen;
+    SpaceButton btnJoystick;
     SpaceButton btnAccelerometer;
     SpaceButton btnGyroscope;
+    SpaceButton btnBack;
 
     public ScreenSettings(Main main) {
         this.main = main;
         batch = main.batch;
         camera = main.camera;
         touch = main.touch;
-        font = main.font;
+        font90yellow = main.font90yellow;
+        font90gray = main.font90gray;
 
         imgBG = new Texture("bg2.jpg");
 
-        btnAccelerometer = new SpaceButton(font, isAccelerometerOn?"Accelerometer ON":"Accelerometer OFF", 1100);
-        btnGyroscope = new SpaceButton(font, isGyroscopeOn?"Gyroscope ON":"Gyroscope OFF", 1000);
-        btnBack = new SpaceButton(font, "Back", 300);
+        btnControls = new SpaceButton(font90yellow, "Controls", 100, 1200);
+        btnScreen = new SpaceButton(font90yellow, "Screen", 200, 1100);
+        btnJoystick = new SpaceButton(font90gray, "Joystick Right", 200, 1000);
+        btnAccelerometer = new SpaceButton(font90gray, "Accelerometer", 200, 900);
+        btnGyroscope = new SpaceButton(font90gray, "Gyroscope", 200, 800);
+        btnBack = new SpaceButton(font90yellow, "Back", 150);
     }
 
     @Override
@@ -55,24 +59,24 @@ public class ScreenSettings implements Screen {
             touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touch);
 
+            if(btnScreen.hit(touch)){
+                controls = SCREEN;
+                selectControls();
+            }
+            if(btnJoystick.hit(touch)){
+                controls = JOYSTICK;
+                selectControls();
+            }
             if(btnAccelerometer.hit(touch)){
                 if (Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer)) {
-                    isAccelerometerOn = !isAccelerometerOn;
-                    if(isAccelerometerOn) {
-                        isGyroscopeOn = false;
-                        btnGyroscope.setText("Gyroscope OFF");
-                    }
-                    btnAccelerometer.setText(isAccelerometerOn ? "Accelerometer ON" : "Accelerometer OFF");
+                    controls = ACCELEROMETER;
+                    selectControls();
                 }
             }
             if(btnGyroscope.hit(touch)){
                 if (Gdx.input.isPeripheralAvailable(Input.Peripheral.Gyroscope)) {
-                    isGyroscopeOn = !isGyroscopeOn;
-                    if(isGyroscopeOn) {
-                        isAccelerometerOn = false;
-                        btnAccelerometer.setText("Accelerometer OFF");
-                    }
-                    btnGyroscope.setText(isGyroscopeOn ? "Gyroscope ON" : "Gyroscope OFF");
+                    controls = GYROSCOPE;
+                    selectControls();
                 }
             }
 
@@ -85,7 +89,10 @@ public class ScreenSettings implements Screen {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         batch.draw(imgBG, 0, 0, SCR_WIDTH, SCR_HEIGHT);
-        font.draw(batch, "Settings", 0, 1400, SCR_WIDTH, Align.center, true);
+        font90yellow.draw(batch, "Settings", 0, 1500, SCR_WIDTH, Align.center, true);
+        btnControls.font.draw(batch, btnControls.text, btnControls.x, btnControls.y);
+        btnScreen.font.draw(batch, btnScreen.text, btnScreen.x, btnScreen.y);
+        btnJoystick.font.draw(batch, btnJoystick.text, btnJoystick.x, btnJoystick.y);
         btnAccelerometer.font.draw(batch, btnAccelerometer.text, btnAccelerometer.x, btnAccelerometer.y);
         btnGyroscope.font.draw(batch, btnGyroscope.text, btnGyroscope.x, btnGyroscope.y);
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
@@ -115,5 +122,18 @@ public class ScreenSettings implements Screen {
     @Override
     public void dispose() {
         imgBG.dispose();
+    }
+
+    void selectControls(){
+        btnScreen.setFont(font90gray);
+        btnJoystick.setFont(font90gray);
+        btnAccelerometer.setFont(font90gray);
+        btnGyroscope.setFont(font90gray);
+        switch (controls){
+            case SCREEN: btnScreen.setFont(font90yellow); break;
+            case JOYSTICK: btnJoystick.setFont(font90yellow); break;
+            case ACCELEROMETER: btnAccelerometer.setFont(font90yellow); break;
+            case GYROSCOPE: btnGyroscope.setFont(font90yellow);
+        }
     }
 }

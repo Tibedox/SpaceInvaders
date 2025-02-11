@@ -36,7 +36,13 @@ public class SpaceButton {
         this.text = text;
         GlyphLayout glyphLayout = new GlyphLayout(font, text);
         width = glyphLayout.width;
-        this.x = SCR_WIDTH/2-width/2;
+    }
+
+    public void setFont(BitmapFont font){
+        this.font = font;
+        GlyphLayout glyphLayout = new GlyphLayout(font, text);
+        width = glyphLayout.width;
+        height = glyphLayout.height;
     }
 
     public boolean hit(float tx, float ty){
