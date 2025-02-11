@@ -14,7 +14,8 @@ public class Main extends Game {
     public static int controls = SCREEN;
     public static final float JOYSTICK_WIDTH = 360;
     public static final float JOYSTICK_HEIGHT = 360;
-    public static float joystickX, joystickY;
+    public static float joystickX = SCR_WIDTH-JOYSTICK_WIDTH/2;
+    public static float joystickY = JOYSTICK_HEIGHT/2;
     public static boolean isJoystickRight = true;
 
     public SpriteBatch batch;
