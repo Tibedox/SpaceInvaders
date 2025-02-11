@@ -12,6 +12,9 @@ public class Main extends Game {
     public static final float SCR_HEIGHT = 1600;
     public static final int SCREEN = 0, JOYSTICK = 1, ACCELEROMETER = 2, GYROSCOPE = 3;
     public static int controls = SCREEN;
+    public static final float JOYSTICK_WIDTH = 360;
+    public static final float JOYSTICK_HEIGHT = 360;
+    public static float joystickX, joystickY;
     public static boolean isJoystickRight = true;
 
     public SpriteBatch batch;

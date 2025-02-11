@@ -65,6 +65,8 @@ public class ScreenSettings implements Screen {
             }
             if(btnJoystick.hit(touch)){
                 controls = JOYSTICK;
+                joystickY = JOYSTICK_HEIGHT/2;
+                joystickX = SCR_WIDTH-JOYSTICK_WIDTH/2;
                 selectControls();
             }
             if(btnAccelerometer.hit(touch)){
