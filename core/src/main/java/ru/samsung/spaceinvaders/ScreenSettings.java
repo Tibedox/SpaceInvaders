@@ -64,9 +64,19 @@ public class ScreenSettings implements Screen {
                 selectControls();
             }
             if(btnJoystick.hit(touch)){
+                if(controls == JOYSTICK){
+                    if(isJoystickRight) {
+                        isJoystickRight = false;
+                        btnJoystick.setText("Joystick Left");
+                        joystickX = JOYSTICK_WIDTH/2;
+                    } else {
+                        isJoystickRight = true;
+                        btnJoystick.setText("Joystick Right");
+                        joystickX = SCR_WIDTH-JOYSTICK_WIDTH/2;
+                    }
+                }
                 controls = JOYSTICK;
                 joystickY = JOYSTICK_HEIGHT/2;
-                joystickX = SCR_WIDTH-JOYSTICK_WIDTH/2;
                 selectControls();
             }
             if(btnAccelerometer.hit(touch)){
