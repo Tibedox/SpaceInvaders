@@ -95,7 +95,7 @@ public class ScreenGame implements Screen {
         batch.begin();
         for(Space s: space) batch.draw(imgBG, s.x, s.y, s.width, s.height);
         for (Enemy e: enemies){
-            batch.draw(imgEnemy[e.type][0], e.scrX(), e.scrY(), e.width, e.height);
+            batch.draw(imgEnemy[e.type][e.phase], e.scrX(), e.scrY(), e.width, e.height);
         }
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
         if(controls == JOYSTICK){
