@@ -48,14 +48,19 @@ public class Ship extends SpaceObject{
         }
     }
 
-    public void touch(float tx, float ty) {
-        vx = (tx - x)/50;
-        vy = (ty - y)/50;
+    public void touchScreen(float tx, float ty) {
+        vx = (tx - x)/30;
+        vy = (ty - y)/30;
     }
 
-    public void touch(Vector3 t) {
-        vx = (t.x - x)/50;
-        vy = (t.y - y)/50;
+    public void touchScreen(Vector3 t) {
+        vx = (t.x - x)/30;
+        vy = (t.y - y)/30;
+    }
+
+    public void touchJoystick(Vector3 t) {
+        vx = (t.x - joystickX)/10;
+        vy = (t.y - joystickY)/10;
     }
 
     public void stop() {

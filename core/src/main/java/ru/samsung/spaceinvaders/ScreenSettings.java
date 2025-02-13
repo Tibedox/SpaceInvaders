@@ -26,7 +26,6 @@ public class ScreenSettings implements Screen {
     SpaceButton btnScreen;
     SpaceButton btnJoystick;
     SpaceButton btnAccelerometer;
-    SpaceButton btnGyroscope;
     SpaceButton btnBack;
 
     public ScreenSettings(Main main) {
@@ -43,7 +42,6 @@ public class ScreenSettings implements Screen {
         btnScreen = new SpaceButton(font90yellow, "Screen", 200, 1100);
         btnJoystick = new SpaceButton(font90gray, "Joystick Right", 200, 1000);
         btnAccelerometer = new SpaceButton(font90gray, "Accelerometer", 200, 900);
-        btnGyroscope = new SpaceButton(font90gray, "Gyroscope", 200, 800);
         btnBack = new SpaceButton(font90yellow, "Back", 150);
     }
 
@@ -84,12 +82,6 @@ public class ScreenSettings implements Screen {
                     selectControls();
                 }
             }
-            if(btnGyroscope.hit(touch)){
-                if (Gdx.input.isPeripheralAvailable(Input.Peripheral.Gyroscope)) {
-                    controls = GYROSCOPE;
-                    selectControls();
-                }
-            }
 
             if(btnBack.hit(touch)){
                 main.setScreen(main.screenMenu);
@@ -105,7 +97,6 @@ public class ScreenSettings implements Screen {
         btnScreen.font.draw(batch, btnScreen.text, btnScreen.x, btnScreen.y);
         btnJoystick.font.draw(batch, btnJoystick.text, btnJoystick.x, btnJoystick.y);
         btnAccelerometer.font.draw(batch, btnAccelerometer.text, btnAccelerometer.x, btnAccelerometer.y);
-        btnGyroscope.font.draw(batch, btnGyroscope.text, btnGyroscope.x, btnGyroscope.y);
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
     }
@@ -139,12 +130,10 @@ public class ScreenSettings implements Screen {
         btnScreen.setFont(font90gray);
         btnJoystick.setFont(font90gray);
         btnAccelerometer.setFont(font90gray);
-        btnGyroscope.setFont(font90gray);
         switch (controls){
             case SCREEN: btnScreen.setFont(font90yellow); break;
             case JOYSTICK: btnJoystick.setFont(font90yellow); break;
-            case ACCELEROMETER: btnAccelerometer.setFont(font90yellow); break;
-            case GYROSCOPE: btnGyroscope.setFont(font90yellow);
+            case ACCELEROMETER: btnAccelerometer.setFont(font90yellow);
         }
     }
 }

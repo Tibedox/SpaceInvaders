@@ -11,6 +11,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.TimeUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ScreenGame implements Screen {
     Main main;
@@ -24,11 +28,14 @@ public class ScreenGame implements Screen {
     Texture imgBG;
     Texture imgShipsAtlas;
     TextureRegion[] imgShip = new TextureRegion[12];
+    TextureRegion[][] imgEnemy = new TextureRegion[4][12];
 
     SpaceButton btnBack;
 
     Space[] space = new Space[2];
     Ship ship;
+    List<Enemy> enemies = new ArrayList<>();
+    private long timeLastSpawnEnemy, timeIntervalSpawnEnemy = 2000;
 
     public ScreenGame(Main main) {
         this.main = main;
@@ -40,8 +47,13 @@ public class ScreenGame implements Screen {
         imgJoystick = new Texture("joystick.png");
         imgBG = new Texture("bg0.jpg");
         imgShipsAtlas = new Texture("ships_atlas.png");
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < imgShip.length; i++) {
             imgShip[i] = new TextureRegion(imgShipsAtlas, (i<7?i:12-i)*400, 0, 400, 400);
+        }
+        for(int j = 0; j < imgEnemy.length; j++) {
+            for (int i = 0; i < imgEnemy[j].length; i++) {
+                imgEnemy[j][i] = new TextureRegion(imgShipsAtlas, (i < 7 ? i : 12 - i) * 400, (j+1)*400, 400, 400);
+            }
         }
 
         btnBack = new SpaceButton(font, "x", 850, 1600);
@@ -58,7 +70,6 @@ public class ScreenGame implements Screen {
 
     @Override
     public void render(float delta) {
-        //String z="ACC";
         // касания
         if(Gdx.input.justTouched()){
             touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -69,23 +80,23 @@ public class ScreenGame implements Screen {
             }
         }
         if(controls == ACCELEROMETER){
-            //z="x:"+Gdx.input.getAccelerometerX()+"\ny:"+Gdx.input.getAccelerometerY()+"\nz:"+Gdx.input.getAccelerometerZ();
             ship.vx = -Gdx.input.getAccelerometerX()*10;
             ship.vy = -Gdx.input.getAccelerometerY()*10;
         }
-        if(controls == GYROSCOPE){
-            ship.vx = -Gdx.input.getGyroscopeX()*10;
-            ship.vy = -Gdx.input.getGyroscopeY()*10;
-        }
 
         // события
-        for(Space s: space) s.move();
+        for (Space s: space) s.move();
+        spawnEnemy();
+        for (Enemy e: enemies) e.move();
         ship.move();
 
         // отрисовка
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         for(Space s: space) batch.draw(imgBG, s.x, s.y, s.width, s.height);
+        for (Enemy e: enemies){
+            batch.draw(imgEnemy[e.type][0], e.scrX(), e.scrY(), e.width, e.height);
+        }
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
         if(controls == JOYSTICK){
             batch.draw(imgJoystick, joystickX-JOYSTICK_WIDTH/2, joystickY-JOYSTICK_HEIGHT/2, JOYSTICK_WIDTH, JOYSTICK_HEIGHT);
@@ -120,6 +131,13 @@ public class ScreenGame implements Screen {
         imgShipsAtlas.dispose();
     }
 
+    private void spawnEnemy(){
+        if(TimeUtils.millis()>timeLastSpawnEnemy+timeIntervalSpawnEnemy){
+            enemies.add(new Enemy());
+            timeLastSpawnEnemy = TimeUtils.millis();
+        }
+    }
+
     class SpaceInputProcessor implements InputProcessor{
 
         @Override
@@ -142,12 +160,11 @@ public class ScreenGame implements Screen {
             touch.set(screenX, screenY, 0);
             camera.unproject(touch);
             if(controls == SCREEN) {
-                ship.touch(touch);
+                ship.touchScreen(touch);
             }
             if(controls == JOYSTICK) {
                 if(Math.pow(touch.x-joystickX, 2) + Math.pow(touch.y-joystickY, 2) <= Math.pow(JOYSTICK_WIDTH/2, 2)){
-                    ship.vx = (touch.x-joystickX)/10;
-                    ship.vy = (touch.y-joystickY)/10;
+                    ship.touchJoystick(touch);
                 }
             }
             return false;
@@ -169,7 +186,7 @@ public class ScreenGame implements Screen {
             touch.set(screenX, screenY, 0);
             camera.unproject(touch);
             if(controls == SCREEN) {
-                ship.touch(touch);
+                ship.touchScreen(touch);
             }
             if(controls == JOYSTICK) {
                 if(Math.pow(touch.x-joystickX, 2) + Math.pow(touch.y-joystickY, 2) <= Math.pow(JOYSTICK_WIDTH/2, 2)){
