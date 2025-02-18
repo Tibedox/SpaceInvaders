@@ -5,6 +5,7 @@ import static ru.samsung.spaceinvaders.Main.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -31,6 +32,9 @@ public class ScreenGame implements Screen {
     TextureRegion[] imgShip = new TextureRegion[12];
     TextureRegion[][] imgEnemy = new TextureRegion[4][12];
     TextureRegion imgShot;
+
+    Sound sndExplosion;
+    Sound sndBlaster;
 
     SpaceButton btnBack;
 
@@ -61,6 +65,9 @@ public class ScreenGame implements Screen {
             }
         }
         imgShot = new TextureRegion(imgShotsAtlas, 0, 0, 100, 350);
+
+        sndExplosion = Gdx.audio.newSound(Gdx.files.internal("explosion.mp3"));
+        sndBlaster = Gdx.audio.newSound(Gdx.files.internal("blaster.mp3"));
 
         btnBack = new SpaceButton(font, "x", 850, 1600);
 
@@ -103,11 +110,15 @@ public class ScreenGame implements Screen {
 
         for (int i = shots.size()-1; i>=0; i--) {
             for (int j = enemies.size()-1; j>=0; j--) {
-                shots.get(i)
+                if(shots.get(i).overlap(enemies.get(j))){
+                    shots.remove(i);
+                    enemies.remove(j);
+                    sndExplosion.play();
+                    break;
+                }
             }
         }
 
-        System.out.println(shots.size());
         ship.move();
 
         // отрисовка
@@ -152,6 +163,9 @@ public class ScreenGame implements Screen {
     public void dispose() {
         imgBG.dispose();
         imgShipsAtlas.dispose();
+        imgShotsAtlas.dispose();
+        sndBlaster.dispose();
+        sndExplosion.dispose();
     }
 
     private void spawnEnemy(){
@@ -165,6 +179,7 @@ public class ScreenGame implements Screen {
         if(TimeUtils.millis()>timeLastShoot+timeShootInterval){
             shots.add(new Shot(ship.x-60, ship.y));
             shots.add(new Shot(ship.x+60, ship.y));
+            sndBlaster.play();
             timeLastShoot = TimeUtils.millis();
         }
     }
