@@ -11,18 +11,15 @@ public class Main extends Game {
     public static final float SCR_WIDTH = 900;
     public static final float SCR_HEIGHT = 1600;
     public static final int SCREEN = 0, JOYSTICK = 1, ACCELEROMETER = 2;
+    public static final boolean LEFT = false, RIGHT = true;
     public static int controls = SCREEN;
-    public static final float JOYSTICK_WIDTH = 360;
-    public static final float JOYSTICK_HEIGHT = 360;
-    public static float joystickX = SCR_WIDTH-JOYSTICK_WIDTH/2;
-    public static float joystickY = JOYSTICK_HEIGHT/2;
-    public static boolean isJoystickRight = true;
 
     public SpriteBatch batch;
     public OrthographicCamera camera;
     public Vector3 touch;
     public BitmapFont font90yellow, font90gray;
 
+    public Joystick joystick;
     public ScreenMenu screenMenu;
     public ScreenGame screenGame;
     public ScreenSettings screenSettings;
@@ -38,6 +35,7 @@ public class Main extends Game {
         font90yellow = new BitmapFont(Gdx.files.internal("stylo90yellow.fnt"));
         font90gray = new BitmapFont(Gdx.files.internal("stylo90gray.fnt"));
 
+        joystick = new Joystick(360, RIGHT);
         screenMenu = new ScreenMenu(this);
         screenGame = new ScreenGame(this);
         screenSettings = new ScreenSettings(this);

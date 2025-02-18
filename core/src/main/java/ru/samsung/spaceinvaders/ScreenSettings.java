@@ -40,7 +40,7 @@ public class ScreenSettings implements Screen {
 
         btnControls = new SpaceButton(font90yellow, "Controls", 100, 1200);
         btnScreen = new SpaceButton(font90yellow, "Screen", 200, 1100);
-        btnJoystick = new SpaceButton(font90gray, "Joystick Right", 200, 1000);
+        btnJoystick = new SpaceButton(font90gray, joystickBtnText(), 200, 1000);
         btnAccelerometer = new SpaceButton(font90gray, "Accelerometer", 200, 900);
         btnBack = new SpaceButton(font90yellow, "Back", 150);
     }
@@ -63,17 +63,12 @@ public class ScreenSettings implements Screen {
             }
             if(btnJoystick.hit(touch)){
                 if(controls == JOYSTICK){
-                    if(isJoystickRight) {
-                        isJoystickRight = false;
-                        btnJoystick.setText("Joystick Left");
-                        joystickX = JOYSTICK_WIDTH/2;
-                    } else {
-                        isJoystickRight = true;
-                        btnJoystick.setText("Joystick Right");
-                        joystickX = SCR_WIDTH-JOYSTICK_WIDTH/2;
-                    }
+                    main.joystick.setSide(!main.joystick.side);
+                    btnJoystick.setText(joystickBtnText());
                 }
-                controls = JOYSTICK;
+                else {
+                    controls = JOYSTICK;
+                }
                 selectControls();
             }
             if(btnAccelerometer.hit(touch)){
@@ -135,5 +130,9 @@ public class ScreenSettings implements Screen {
             case JOYSTICK: btnJoystick.setFont(font90yellow); break;
             case ACCELEROMETER: btnAccelerometer.setFont(font90yellow);
         }
+    }
+
+    private String joystickBtnText(){
+        return main.joystick.side ? "Joystick Right" : "Joystick Left";
     }
 }

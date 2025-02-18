@@ -95,13 +95,28 @@ public class ScreenGame implements Screen {
         spawnEnemy();
         for (Enemy e: enemies) e.move();
         spawnShots();
-        for (Shot s: shots) s.move();
+
+        for (int i = shots.size()-1; i>=0; i--) {
+            shots.get(i).move();
+            if(shots.get(i).outOfScreen()) shots.remove(i);
+        }
+
+        for (int i = shots.size()-1; i>=0; i--) {
+            for (int j = enemies.size()-1; j>=0; j--) {
+                shots.get(i)
+            }
+        }
+
+        System.out.println(shots.size());
         ship.move();
 
         // отрисовка
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         for(Space s: space) batch.draw(imgBG, s.x, s.y, s.width, s.height);
+        if(controls == JOYSTICK){
+            batch.draw(imgJoystick, main.joystick.scrX(), main.joystick.scrY(), main.joystick.width, main.joystick.height);
+        }
         for (Enemy e: enemies){
             batch.draw(imgEnemy[e.type][e.phase], e.scrX(), e.scrY(), e.width, e.height);
         }
@@ -109,9 +124,6 @@ public class ScreenGame implements Screen {
             batch.draw(imgShot, s.scrX(), s.scrY(), s.width, s.height);
         }
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
-        if(controls == JOYSTICK){
-            batch.draw(imgJoystick, joystickX-JOYSTICK_WIDTH/2, joystickY-JOYSTICK_HEIGHT/2, JOYSTICK_WIDTH, JOYSTICK_HEIGHT);
-        }
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
     }
@@ -182,8 +194,8 @@ public class ScreenGame implements Screen {
                 ship.touchScreen(touch);
             }
             if(controls == JOYSTICK) {
-                if(Math.pow(touch.x-joystickX, 2) + Math.pow(touch.y-joystickY, 2) <= Math.pow(JOYSTICK_WIDTH/2, 2)){
-                    ship.touchJoystick(touch);
+                if(main.joystick.isTouchInside(touch)){
+                    ship.touchJoystick(touch, main.joystick);
                 }
             }
             return false;
@@ -208,9 +220,8 @@ public class ScreenGame implements Screen {
                 ship.touchScreen(touch);
             }
             if(controls == JOYSTICK) {
-                if(Math.pow(touch.x-joystickX, 2) + Math.pow(touch.y-joystickY, 2) <= Math.pow(JOYSTICK_WIDTH/2, 2)){
-                    ship.vx = (touch.x-joystickX)/10;
-                    ship.vy = (touch.y-joystickY)/10;
+                if(main.joystick.isTouchInside(touch)){
+                    ship.touchJoystick(touch, main.joystick);
                 }
             }
             return false;
