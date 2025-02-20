@@ -113,7 +113,7 @@ public class ScreenGame implements Screen {
                 if(shots.get(i).overlap(enemies.get(j))){
                     shots.remove(i);
                     enemies.remove(j);
-                    sndExplosion.play();
+                    if(isSound) sndExplosion.play();
                     break;
                 }
             }
@@ -179,7 +179,7 @@ public class ScreenGame implements Screen {
         if(TimeUtils.millis()>timeLastShoot+timeShootInterval){
             shots.add(new Shot(ship.x-60, ship.y));
             shots.add(new Shot(ship.x+60, ship.y));
-            sndBlaster.play();
+            if(isSound) sndBlaster.play();
             timeLastShoot = TimeUtils.millis();
         }
     }

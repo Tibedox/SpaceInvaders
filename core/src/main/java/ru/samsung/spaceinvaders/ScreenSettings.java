@@ -26,6 +26,7 @@ public class ScreenSettings implements Screen {
     SpaceButton btnScreen;
     SpaceButton btnJoystick;
     SpaceButton btnAccelerometer;
+    SpaceButton btnSound;
     SpaceButton btnBack;
 
     public ScreenSettings(Main main) {
@@ -42,6 +43,7 @@ public class ScreenSettings implements Screen {
         btnScreen = new SpaceButton(font90yellow, "Screen", 200, 1100);
         btnJoystick = new SpaceButton(font90gray, joystickBtnText(), 200, 1000);
         btnAccelerometer = new SpaceButton(font90gray, "Accelerometer", 200, 900);
+        btnSound = new SpaceButton(font90yellow, soundBtnText(), 100, 750);
         btnBack = new SpaceButton(font90yellow, "Back", 150);
     }
 
@@ -71,6 +73,10 @@ public class ScreenSettings implements Screen {
                 }
                 selectControls();
             }
+            if(btnSound.hit(touch)){
+                isSound = !isSound;
+                btnSound.setText(soundBtnText());
+            }
             if(btnAccelerometer.hit(touch)){
                 if (Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer)) {
                     controls = ACCELEROMETER;
@@ -92,6 +98,7 @@ public class ScreenSettings implements Screen {
         btnScreen.font.draw(batch, btnScreen.text, btnScreen.x, btnScreen.y);
         btnJoystick.font.draw(batch, btnJoystick.text, btnJoystick.x, btnJoystick.y);
         btnAccelerometer.font.draw(batch, btnAccelerometer.text, btnAccelerometer.x, btnAccelerometer.y);
+        btnSound.font.draw(batch, btnSound.text, btnSound.x, btnSound.y);
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
     }
@@ -134,5 +141,9 @@ public class ScreenSettings implements Screen {
 
     private String joystickBtnText(){
         return main.joystick.side ? "Joystick Right" : "Joystick Left";
+    }
+
+    private String soundBtnText() {
+        return isSound ? "Sound On" : "Sound Off";
     }
 }
