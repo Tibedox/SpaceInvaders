@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -44,6 +45,7 @@ public class ScreenGame implements Screen {
     List<Enemy> enemies = new ArrayList<>();
     List<Shot> shots = new ArrayList<>();
     List<Fragment> fragments = new ArrayList<>();
+    private int numFragments = 550;
     private long timeLastSpawnEnemy, timeIntervalSpawnEnemy = 2000;
     private long timeLastShoot, timeShootInterval = 500;
 
@@ -117,6 +119,11 @@ public class ScreenGame implements Screen {
         for (Enemy e: enemies) e.move();
         spawnShots();
 
+        for (int i = fragments.size()-1; i>=0; i--) {
+            fragments.get(i).move();
+            if(fragments.get(i).outOfScreen()) fragments.remove(i);
+        }
+
         for (int i = shots.size()-1; i>=0; i--) {
             shots.get(i).move();
             if(shots.get(i).outOfScreen()) shots.remove(i);
@@ -126,6 +133,7 @@ public class ScreenGame implements Screen {
             for (int j = enemies.size()-1; j>=0; j--) {
                 if(shots.get(i).overlap(enemies.get(j))){
                     shots.remove(i);
+                    spawnFragments(enemies.get(j).x, enemies.get(j).y, enemies.get(j).type);
                     enemies.remove(j);
                     if(isSound) sndExplosion.play();
                     break;
@@ -141,6 +149,9 @@ public class ScreenGame implements Screen {
         for(Space s: space) batch.draw(imgBG, s.x, s.y, s.width, s.height);
         if(controls == JOYSTICK){
             batch.draw(imgJoystick, main.joystick.scrX(), main.joystick.scrY(), main.joystick.width, main.joystick.height);
+        }
+        for (Fragment f: fragments){
+            batch.draw(imgFragment[f.type][f.number], f.scrX(), f.scrY(), f.width, f.height);
         }
         for (Enemy e: enemies){
             batch.draw(imgEnemy[e.type][e.phase], e.scrX(), e.scrY(), e.width, e.height);
@@ -198,6 +209,12 @@ public class ScreenGame implements Screen {
             shots.add(new Shot(ship.x+60, ship.y));
             if(isSound) sndBlaster.play();
             timeLastShoot = TimeUtils.millis();
+        }
+    }
+
+    private void spawnFragments(float x, float y, int type){
+        for (int i = 0; i < numFragments; i++) {
+            fragments.add(new Fragment(x, y, type, MathUtils.random(0, imgFragment[0].length-1)));
         }
     }
 
