@@ -1,7 +1,6 @@
 package ru.samsung.spaceinvaders;
 
-import static ru.samsung.spaceinvaders.Main.SCR_HEIGHT;
-import static ru.samsung.spaceinvaders.Main.SCR_WIDTH;
+import static ru.samsung.spaceinvaders.Main.*;
 
 public class Shot extends SpaceObject{
     public Shot(float x, float y){

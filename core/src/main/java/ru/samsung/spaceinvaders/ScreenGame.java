@@ -31,6 +31,7 @@ public class ScreenGame implements Screen {
     Texture imgShotsAtlas;
     TextureRegion[] imgShip = new TextureRegion[12];
     TextureRegion[][] imgEnemy = new TextureRegion[4][12];
+    TextureRegion[][] imgFragment = new TextureRegion[5][25];
     TextureRegion imgShot;
 
     Sound sndExplosion;
@@ -42,6 +43,7 @@ public class ScreenGame implements Screen {
     Ship ship;
     List<Enemy> enemies = new ArrayList<>();
     List<Shot> shots = new ArrayList<>();
+    List<Fragment> fragments = new ArrayList<>();
     private long timeLastSpawnEnemy, timeIntervalSpawnEnemy = 2000;
     private long timeLastShoot, timeShootInterval = 500;
 
@@ -59,9 +61,21 @@ public class ScreenGame implements Screen {
         for (int i = 0; i < imgShip.length; i++) {
             imgShip[i] = new TextureRegion(imgShipsAtlas, (i<7?i:12-i)*400, 0, 400, 400);
         }
-        for(int j = 0; j < imgEnemy.length; j++) {
-            for (int i = 0; i < imgEnemy[j].length; i++) {
-                imgEnemy[j][i] = new TextureRegion(imgShipsAtlas, (i < 7 ? i : 12 - i) * 400, (j+1)*400, 400, 400);
+        for(int i = 0; i < imgEnemy.length; i++) {
+            for (int j = 0; j < imgEnemy[i].length; j++) {
+                imgEnemy[i][j] = new TextureRegion(imgShipsAtlas, (j < 7 ? j : 12 - j) * 400, (i+1)*400, 400, 400);
+            }
+        }
+        int k = (int) Math.sqrt(imgFragment[0].length);
+        int size = 400/k;
+        for (int i = 0; i < imgFragment.length; i++) {
+            for (int j = 0; j < imgFragment[i].length; j++) {
+                if(i<imgEnemy.length) {
+                    imgFragment[i][j] = new TextureRegion(imgEnemy[i][0], j % k * size, j / k * size, size, size);
+                }
+                else {
+                    imgFragment[i][j] = new TextureRegion(imgShip[0], j % k * size, j / k * size, size, size);
+                }
             }
         }
         imgShot = new TextureRegion(imgShotsAtlas, 0, 0, 100, 350);
@@ -134,6 +148,9 @@ public class ScreenGame implements Screen {
         for (Shot s: shots){
             batch.draw(imgShot, s.scrX(), s.scrY(), s.width, s.height);
         }
+        /*for (int i = 0; i < imgFragment[4].length; i++) {
+            batch.draw(imgFragment[4][i], 100, i*SCR_HEIGHT/25, SCR_HEIGHT/25, SCR_HEIGHT/25);
+        }*/
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
