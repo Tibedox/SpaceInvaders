@@ -45,9 +45,9 @@ public class ScreenGame implements Screen {
     List<Enemy> enemies = new ArrayList<>();
     List<Shot> shots = new ArrayList<>();
     List<Fragment> fragments = new ArrayList<>();
-    private int numFragments = 550;
+    private int numFragments = 150;
     private long timeLastSpawnEnemy, timeIntervalSpawnEnemy = 2000;
-    private long timeLastShoot, timeShootInterval = 500;
+    private long timeLastShoot, timeShootInterval = 1000;
 
     public ScreenGame(Main main) {
         this.main = main;

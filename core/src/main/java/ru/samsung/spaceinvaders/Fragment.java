@@ -7,14 +7,16 @@ import com.badlogic.gdx.math.MathUtils;
 public class Fragment extends SpaceObject{
     public int type;
     public int number;
+
     public Fragment(float x, float y, int type, int number) {
         super(x, y);
         this.type = type;
         this.number = number;
-        width = height = MathUtils.random(30, 50);
-        vx = MathUtils.random(-10f, 10f);
-        vy = MathUtils.random(-10f, 10f);
-
+        width = height = MathUtils.random(20f, 40f);
+        float a = MathUtils.random(0f, 360f);
+        float v = MathUtils.random(1f, 10f);
+        vx = v*MathUtils.sin(a);
+        vy = v*MathUtils.cos(a);
     }
 
     public boolean outOfScreen(){
