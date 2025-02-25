@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.MathUtils;
 public class Fragment extends SpaceObject{
     public int type;
     public int number;
+    public float rotation;
+    private final float vRotation;
 
     public Fragment(float x, float y, int type, int number) {
         super(x, y);
@@ -17,6 +19,13 @@ public class Fragment extends SpaceObject{
         float v = MathUtils.random(1f, 10f);
         vx = v*MathUtils.sin(a);
         vy = v*MathUtils.cos(a);
+        vRotation = MathUtils.random(-5f, 5f);
+    }
+
+    @Override
+    public void move() {
+        super.move();
+        rotation += vRotation;
     }
 
     public boolean outOfScreen(){
