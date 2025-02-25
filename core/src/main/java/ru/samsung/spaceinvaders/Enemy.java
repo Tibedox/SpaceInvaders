@@ -7,9 +7,10 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class Enemy extends SpaceObject{
-    private int health;
+    public int health;
     public int phase, nPhases = 12;
     private long timeLastPhase, timePhaseInterval = 30;
+    public int nFragments;
 
     public Enemy() {
         type = MathUtils.random(0, 3);
@@ -37,21 +38,25 @@ public class Enemy extends SpaceObject{
                 health = 2;
                 width = height = 200;
                 vy = MathUtils.random(-6f, -4f);
+                nFragments = 200;
                 break;
             case 1:
                 health = 4;
                 width = height = 300;
                 vy = MathUtils.random(-4f, -3f);
+                nFragments = 500;
                 break;
             case 2:
                 health = 3;
                 width = height = 250;
                 vy = MathUtils.random(-5f, -4f);
+                nFragments = 300;
                 break;
             case 3:
                 health = 1;
                 width = height = 150;
                 vy = MathUtils.random(-8f, -6f);
+                nFragments = 150;
                 break;
         }
     }
