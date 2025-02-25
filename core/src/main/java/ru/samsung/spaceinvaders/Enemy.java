@@ -7,17 +7,15 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class Enemy extends SpaceObject{
-    public int type;
     private int health;
     public int phase, nPhases = 12;
     private long timeLastPhase, timePhaseInterval = 30;
 
     public Enemy() {
-        width = height = 200;
         type = MathUtils.random(0, 3);
+        settings(type);
         x = MathUtils.random(width/2, SCR_WIDTH-width/2);
         y = MathUtils.random(SCR_HEIGHT+height, SCR_HEIGHT*2);
-        vy = MathUtils.random(-6f, -3f);
     }
 
     @Override
@@ -30,6 +28,31 @@ public class Enemy extends SpaceObject{
         if(TimeUtils.millis() > timeLastPhase+timePhaseInterval) {
             if (++phase == nPhases) phase = 0;
             timeLastPhase = TimeUtils.millis();
+        }
+    }
+
+    private void settings(int type){
+        switch (type){
+            case 0:
+                health = 2;
+                width = height = 200;
+                vy = MathUtils.random(-6f, -4f);
+                break;
+            case 1:
+                health = 4;
+                width = height = 300;
+                vy = MathUtils.random(-4f, -3f);
+                break;
+            case 2:
+                health = 3;
+                width = height = 250;
+                vy = MathUtils.random(-5f, -4f);
+                break;
+            case 3:
+                health = 1;
+                width = height = 150;
+                vy = MathUtils.random(-8f, -6f);
+                break;
         }
     }
 }

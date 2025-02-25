@@ -5,7 +5,6 @@ import static ru.samsung.spaceinvaders.Main.*;
 import com.badlogic.gdx.math.MathUtils;
 
 public class Fragment extends SpaceObject{
-    public int type;
     public int number;
     public float rotation;
     private final float vRotation;
@@ -29,6 +28,6 @@ public class Fragment extends SpaceObject{
     }
 
     public boolean outOfScreen(){
-        return x < -width/2 || x > SCR_WIDTH + width/2 || y < -height/2 || y > SCR_HEIGHT + height/2;
+        return x < -width/2 || x > SCR_WIDTH + width/2 || y < -height/2 || y > SCR_HEIGHT + height*2;
     }
 }

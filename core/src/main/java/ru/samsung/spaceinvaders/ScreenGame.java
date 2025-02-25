@@ -133,7 +133,7 @@ public class ScreenGame implements Screen {
             for (int j = enemies.size()-1; j>=0; j--) {
                 if(shots.get(i).overlap(enemies.get(j))){
                     shots.remove(i);
-                    spawnFragments(enemies.get(j).x, enemies.get(j).y, enemies.get(j).type);
+                    spawnFragments(enemies.get(j));
                     enemies.remove(j);
                     if(isSound) sndExplosion.play();
                     break;
@@ -212,9 +212,9 @@ public class ScreenGame implements Screen {
         }
     }
 
-    private void spawnFragments(float x, float y, int type){
+    private void spawnFragments(SpaceObject o){
         for (int i = 0; i < numFragments; i++) {
-            fragments.add(new Fragment(x, y, type, MathUtils.random(0, imgFragment[0].length-1)));
+            fragments.add(new Fragment(o.x, o.y, o.type, MathUtils.random(0, imgFragment[0].length-1)));
         }
     }
 
