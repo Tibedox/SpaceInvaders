@@ -4,6 +4,7 @@ import static ru.samsung.spaceinvaders.Main.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -185,6 +186,15 @@ public class ScreenGame implements Screen {
         if(!ship.isAlive) {
             font.draw(batch, "GAME OVER", 0, 1200, SCR_WIDTH, Align.center, true);
         }
+        /*if(gameState == GAME_OVER) {
+            font90.draw(batch, "Game Over", 0, 700, SCR_WIDTH, Align.center, true);
+            for (int i = 0; i < player.length-1; i++) {
+                font70.draw(batch, player[i].name, 450, 550 - 70*i);
+                font70.draw(batch, showTime(player[i].time), 900, 550 - 70*i);
+            }
+            btnRestart.font.draw(batch, btnRestart.text, btnRestart.x, btnRestart.y);
+            btnClearTable.font.draw(batch, btnClearTable.text, btnClearTable.x, btnClearTable.y);
+        }*/
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
     }
@@ -239,6 +249,72 @@ public class ScreenGame implements Screen {
             fragments.add(new Fragment(o.x, o.y, o.type, MathUtils.random(0, imgFragment[0].length-1)));
         }
     }
+
+    /*private void sortTableOfRecords(){
+        for (Player p : player) {
+            if (p.time == 0) p.time = Long.MAX_VALUE;
+        }
+
+        int n = player.length;
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                if (player[j].time > player[j + 1].time) {
+                    // Меняем элементы местами
+                    Player temp = player[j];
+                    player[j] = player[j + 1];
+                    player[j + 1] = temp;
+                }
+            }
+        }
+
+        for (Player p : player) {
+            if (p.time == Long.MAX_VALUE) p.time = 0;
+        }
+    }
+
+    private void saveTableOfRecords(){
+        Preferences prefs = Gdx.app.getPreferences("WaspTable");
+        for (int i = 0; i < player.length; i++) {
+            prefs.putString("name"+i, player[i].name);
+            prefs.putLong("time"+i, player[i].time);
+        }
+        prefs.flush();
+    }
+
+    private void loadTableOfRecords(){
+        Preferences prefs = Gdx.app.getPreferences("WaspTable");
+        for (int i = 0; i < player.length; i++) {
+            player[i].name = prefs.getString("name"+i, "Noname");
+            player[i].time = prefs.getLong("time"+i, 0);
+        }
+    }
+
+    private void clearTableOfRecords(){
+        for (Player p : player) {
+            p.name = "Noname";
+            p.time = 0;
+        }
+    }
+
+    private void gameOver(String name){
+        gameState = GAME_OVER;
+        player[player.length-1].name = name;
+        player[player.length-1].time = timeCurrent;
+        sortTableOfRecords();
+        saveTableOfRecords();
+    }
+
+    private void gameRestart(){
+        gameState = PLAY_GAME;
+        counterInsects = 0;
+        for (int i = 0; i < wasp.length; i++) {
+            wasp[i] = new Wasp(SPAWN_WASP_X, SPAWN_WASP_Y, imgWasp, sndWasp);
+        }
+        for (int i = 0; i < trump.length; i++) {
+            trump[i] = new Trump(SPAWN_TRUMP_X, SPAWN_TRUMP_Y, imgTrump, sndTrump);
+        }
+        timeStartGame = TimeUtils.millis();
+    }*/
 
     class SpaceInputProcessor implements InputProcessor{
 
