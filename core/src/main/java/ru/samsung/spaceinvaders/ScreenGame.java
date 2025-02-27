@@ -117,9 +117,17 @@ public class ScreenGame implements Screen {
         // события
         for (Space s: space) s.move();
         spawnEnemy();
-        for (Enemy e: enemies) e.move();
-        spawnShots();
-
+        if(ship.isAlive) spawnShots();
+        for (int i = enemies.size()-1; i >= 0; i--) {
+            enemies.get(i).move();
+            if(enemies.get(i).overlap(ship)){
+                if(isSound) sndExplosion.play();
+                spawnFragments(enemies.get(i));
+                enemies.remove(i);
+                spawnFragments(ship);
+                ship.dead();
+            }
+        }
         for (int i = fragments.size()-1; i>=0; i--) {
             fragments.get(i).move();
             if(fragments.get(i).outOfScreen()) fragments.remove(i);
@@ -145,7 +153,7 @@ public class ScreenGame implements Screen {
             }
         }
 
-        ship.move();
+        if(ship.isAlive) ship.move();
 
         // отрисовка
         batch.setProjectionMatrix(camera.combined);

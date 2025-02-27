@@ -8,11 +8,13 @@ import com.badlogic.gdx.utils.TimeUtils;
 public class Ship extends SpaceObject{
     public int phase, nPhases = 12;
     private long timeLastPhase, timePhaseInterval = 30;
+    public boolean isAlive = true;
 
     public Ship(float x, float y) {
         super(x, y);
         width = 200;
         height = 200;
+        type = 4;
     }
 
     @Override
@@ -66,5 +68,10 @@ public class Ship extends SpaceObject{
     public void stop() {
         vx = 0;
         vy = 0;
+    }
+
+    public void dead(){
+        isAlive = false;
+        x = -10000;
     }
 }
