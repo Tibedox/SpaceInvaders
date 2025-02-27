@@ -1,9 +1,11 @@
 package ru.samsung.spaceinvaders;
 
 import static ru.samsung.spaceinvaders.Main.*;
+import static ru.samsung.spaceinvaders.Main.controls;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -40,9 +42,9 @@ public class ScreenSettings implements Screen {
         imgBG = new Texture("bg2.jpg");
 
         btnControls = new SpaceButton(font90yellow, "Controls", 100, 1200);
-        btnScreen = new SpaceButton(font90yellow, "Screen", 200, 1100);
-        btnJoystick = new SpaceButton(font90gray, joystickBtnText(), 200, 1000);
-        btnAccelerometer = new SpaceButton(font90gray, "Accelerometer", 200, 900);
+        btnScreen = new SpaceButton(getFont(SCREEN), "Screen", 200, 1100);
+        btnJoystick = new SpaceButton(getFont(JOYSTICK), joystickBtnText(), 200, 1000);
+        btnAccelerometer = new SpaceButton(getFont(ACCELEROMETER), "Accelerometer", 200, 900);
         btnSound = new SpaceButton(font90yellow, soundBtnText(), 100, 750);
         btnBack = new SpaceButton(font90yellow, "Back", 150);
     }
@@ -120,7 +122,7 @@ public class ScreenSettings implements Screen {
 
     @Override
     public void hide() {
-
+        saveSettings();
     }
 
     @Override
@@ -145,5 +147,17 @@ public class ScreenSettings implements Screen {
 
     private String soundBtnText() {
         return isSound ? "Sound On" : "Sound Off";
+    }
+
+    public BitmapFont getFont(int type) {
+        return (controls == type)? font90yellow : font90gray;
+    }
+
+    private void saveSettings() {
+        Preferences prefs = Gdx.app.getPreferences("SpaceInvadersSettings");
+        prefs.putInteger("controls", controls);
+        prefs.putBoolean("joystick", main.joystick.side);
+        prefs.putBoolean("sound", isSound);
+        prefs.flush();
     }
 }

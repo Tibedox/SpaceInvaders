@@ -3,6 +3,7 @@ package ru.samsung.spaceinvaders;
 import static ru.samsung.spaceinvaders.Main.*;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -40,6 +41,8 @@ public class ScreenMenu implements Screen {
         btnLeaderBoard = new SpaceButton(font, "LeaderBoard", 250, 800);
         btnAbout = new SpaceButton(font, "About", 250, 650);
         btnExit = new SpaceButton(font, "Exit", 250, 500);
+
+        loadSettings();
     }
 
     @Override
@@ -107,5 +110,12 @@ public class ScreenMenu implements Screen {
     @Override
     public void dispose() {
         imgBG.dispose();
+    }
+
+    private void loadSettings() {
+        Preferences prefs = Gdx.app.getPreferences("SpaceInvadersSettings");
+        controls = prefs.getInteger("controls");
+        main.joystick.setSide(prefs.getBoolean("joystick"));
+        isSound = prefs.getBoolean("sound");
     }
 }
