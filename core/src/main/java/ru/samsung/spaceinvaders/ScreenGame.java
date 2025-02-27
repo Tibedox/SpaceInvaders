@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.ArrayList;
@@ -120,6 +121,11 @@ public class ScreenGame implements Screen {
         if(ship.isAlive) spawnShots();
         for (int i = enemies.size()-1; i >= 0; i--) {
             enemies.get(i).move();
+            if(ship.isAlive && enemies.get(i).outOfScreen()){
+                if(isSound) sndExplosion.play();
+                spawnFragments(ship);
+                ship.dead();
+            }
             if(enemies.get(i).overlap(ship)){
                 if(isSound) sndExplosion.play();
                 spawnFragments(enemies.get(i));
@@ -176,6 +182,9 @@ public class ScreenGame implements Screen {
         }*/
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
         font.draw(batch, ""+kills, 10, 1595);
+        if(!ship.isAlive) {
+            font.draw(batch, "GAME OVER", 0, 1200, SCR_WIDTH, Align.center, true);
+        }
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
     }
