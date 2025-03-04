@@ -97,6 +97,7 @@ public class ScreenGame implements Screen {
         for (int i = 0; i < players.length; i++) {
             players[i] = new Player();
         }
+        loadTableOfRecords();
     }
 
     @Override
@@ -259,7 +260,7 @@ public class ScreenGame implements Screen {
         if(main.player.score >= players[players.length-1].score) {
             players[players.length - 1].clone(main.player);
             sortTableOfRecords();
-            //saveTableOfRecords();
+            saveTableOfRecords();
         }
     }
 
@@ -274,24 +275,26 @@ public class ScreenGame implements Screen {
             }
         }
     }
-/*
+
     private void saveTableOfRecords(){
-        Preferences prefs = Gdx.app.getPreferences("WaspTable");
-        for (int i = 0; i < player.length; i++) {
-            prefs.putString("name"+i, player[i].name);
-            prefs.putLong("time"+i, player[i].time);
+        Preferences prefs = Gdx.app.getPreferences("SpaceInvadersLeaderBoard");
+        for (int i = 0; i < players.length; i++) {
+            prefs.putString("name"+i, players[i].name);
+            prefs.putInteger("score"+i, players[i].score);
+            prefs.putInteger("kills"+i, players[i].kills);
         }
         prefs.flush();
     }
 
-    private void loadTableOfRecords(){
-        Preferences prefs = Gdx.app.getPreferences("WaspTable");
-        for (int i = 0; i < player.length; i++) {
-            player[i].name = prefs.getString("name"+i, "Noname");
-            player[i].time = prefs.getLong("time"+i, 0);
+    public void loadTableOfRecords(){
+        Preferences prefs = Gdx.app.getPreferences("SpaceInvadersLeaderBoard");
+        for (int i = 0; i < players.length; i++) {
+            players[i].name = prefs.getString("name"+i, "Noname");
+            players[i].score = prefs.getInteger("score"+i, 0);
+            players[i].kills = prefs.getInteger("kills"+i, 0);
         }
     }
-
+/*
     private void clearTableOfRecords(){
         for (Player p : player) {
             p.name = "Noname";
