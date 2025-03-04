@@ -50,7 +50,8 @@ public class ScreenGame implements Screen {
     private int numFragments = 150;
     private long timeLastSpawnEnemy, timeIntervalSpawnEnemy = 2000;
     private long timeLastShoot, timeShootInterval = 1000;
-    public int kills;
+    private boolean gameOver;
+    public Player[] players = new Player[10];
 
     public ScreenGame(Main main) {
         this.main = main;
@@ -93,6 +94,9 @@ public class ScreenGame implements Screen {
         space[0] = new Space(0, 0);
         space[1] = new Space(0, SCR_HEIGHT);
         ship = new Ship(SCR_WIDTH/2, 200);
+        for (int i = 0; i < players.length; i++) {
+            players[i] = new Player();
+        }
     }
 
     @Override
@@ -118,21 +122,23 @@ public class ScreenGame implements Screen {
 
         // события
         for (Space s: space) s.move();
+
+        if(!gameOver) {
+            ship.move();
+            spawnShots();
+        }
+
         spawnEnemy();
-        if(ship.isAlive) spawnShots();
         for (int i = enemies.size()-1; i >= 0; i--) {
             enemies.get(i).move();
-            if(ship.isAlive && enemies.get(i).outOfScreen()){
-                if(isSound) sndExplosion.play();
-                spawnFragments(ship);
-                ship.dead();
+            if(!gameOver && enemies.get(i).outOfScreen()){
+                gameOver();
+                break;
             }
             if(enemies.get(i).overlap(ship)){
-                if(isSound) sndExplosion.play();
                 spawnFragments(enemies.get(i));
                 enemies.remove(i);
-                spawnFragments(ship);
-                ship.dead();
+                gameOver();
             }
         }
         for (int i = fragments.size()-1; i>=0; i--) {
@@ -152,15 +158,14 @@ public class ScreenGame implements Screen {
                     if(isSound) sndExplosion.play();
                     if(--enemies.get(j).health == 0) {
                         spawnFragments(enemies.get(j));
+                        main.player.kills++;
+                        main.player.score += enemies.get(j).price;
                         enemies.remove(j);
-                        kills++;
                     }
                     break;
                 }
             }
         }
-
-        if(ship.isAlive) ship.move();
 
         // отрисовка
         batch.setProjectionMatrix(camera.combined);
@@ -182,8 +187,8 @@ public class ScreenGame implements Screen {
             batch.draw(imgFragment[4][i], 100, i*SCR_HEIGHT/25, SCR_HEIGHT/25, SCR_HEIGHT/25);
         }*/
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
-        font.draw(batch, ""+kills, 10, 1595);
-        if(!ship.isAlive) {
+        font.draw(batch, "score:"+main.player.score+" kills:" + main.player.kills, 10, 1595);
+        if(gameOver) {
             font.draw(batch, "GAME OVER", 0, 1200, SCR_WIDTH, Align.center, true);
         }
         /*if(gameState == GAME_OVER) {
@@ -250,6 +255,18 @@ public class ScreenGame implements Screen {
         }
     }
 
+    private void gameOver(){
+        if(isSound) sndExplosion.play();
+        spawnFragments(ship);
+        ship.dead();
+        gameOver = true;
+        if(main.player.score >= players[players.length-1].score) {
+            players[players.length - 1].clone(main.player);
+            //sortTableOfRecords();
+            //saveTableOfRecords();
+        }
+    }
+
     /*private void sortTableOfRecords(){
         for (Player p : player) {
             if (p.time == 0) p.time = Long.MAX_VALUE;
@@ -294,14 +311,6 @@ public class ScreenGame implements Screen {
             p.name = "Noname";
             p.time = 0;
         }
-    }
-
-    private void gameOver(String name){
-        gameState = GAME_OVER;
-        player[player.length-1].name = name;
-        player[player.length-1].time = timeCurrent;
-        sortTableOfRecords();
-        saveTableOfRecords();
     }
 
     private void gameRestart(){

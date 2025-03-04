@@ -26,6 +26,7 @@ public class Main extends Game {
     public ScreenSettings screenSettings;
     public ScreenLeaderBoard screenLeaderBoard;
     public ScreenAbout screenAbout;
+    public Player player;
 
     @Override
     public void create() {
@@ -37,6 +38,7 @@ public class Main extends Game {
         font90gray = new BitmapFont(Gdx.files.internal("stylo90gray.fnt"));
 
         joystick = new Joystick(360, RIGHT);
+        player = new Player();
         screenMenu = new ScreenMenu(this);
         screenGame = new ScreenGame(this);
         screenSettings = new ScreenSettings(this);
