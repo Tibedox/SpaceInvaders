@@ -258,33 +258,23 @@ public class ScreenGame implements Screen {
         gameOver = true;
         if(main.player.score >= players[players.length-1].score) {
             players[players.length - 1].clone(main.player);
-            //sortTableOfRecords();
+            sortTableOfRecords();
             //saveTableOfRecords();
         }
     }
 
-    /*private void sortTableOfRecords(){
-        for (Player p : player) {
-            if (p.time == 0) p.time = Long.MAX_VALUE;
-        }
-
-        int n = player.length;
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < n - i - 1; j++) {
-                if (player[j].time > player[j + 1].time) {
-                    // Меняем элементы местами
-                    Player temp = player[j];
-                    player[j] = player[j + 1];
-                    player[j + 1] = temp;
+    private void sortTableOfRecords(){
+        for (int i = 0; i < players.length - 1; i++) {
+            for (int j = 0; j < players.length - i - 1; j++) {
+                if (players[j].score < players[j + 1].score) {
+                    Player temp = players[j];
+                    players[j] = players[j + 1];
+                    players[j + 1] = temp;
                 }
             }
         }
-
-        for (Player p : player) {
-            if (p.time == Long.MAX_VALUE) p.time = 0;
-        }
     }
-
+/*
     private void saveTableOfRecords(){
         Preferences prefs = Gdx.app.getPreferences("WaspTable");
         for (int i = 0; i < player.length; i++) {
