@@ -187,19 +187,15 @@ public class ScreenGame implements Screen {
             batch.draw(imgFragment[4][i], 100, i*SCR_HEIGHT/25, SCR_HEIGHT/25, SCR_HEIGHT/25);
         }*/
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
-        font.draw(batch, "score:"+main.player.score+" kills:" + main.player.kills, 10, 1595);
+        font.draw(batch, "score:"+main.player.score, 10, 1595);
         if(gameOver) {
             font.draw(batch, "GAME OVER", 0, 1200, SCR_WIDTH, Align.center, true);
-        }
-        /*if(gameState == GAME_OVER) {
-            font90.draw(batch, "Game Over", 0, 700, SCR_WIDTH, Align.center, true);
-            for (int i = 0; i < player.length-1; i++) {
-                font70.draw(batch, player[i].name, 450, 550 - 70*i);
-                font70.draw(batch, showTime(player[i].time), 900, 550 - 70*i);
+            for (int i = 0; i < players.length; i++) {
+                font.draw(batch, players[i].name, 200, 1000 - 70*i);
+                font.draw(batch, ""+players[i].score, 600, 1000 - 70*i);
+                font.draw(batch, ""+players[i].kills, 700, 1000 - 70*i);
             }
-            btnRestart.font.draw(batch, btnRestart.text, btnRestart.x, btnRestart.y);
-            btnClearTable.font.draw(batch, btnClearTable.text, btnClearTable.x, btnClearTable.y);
-        }*/
+        }
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
     }
