@@ -26,7 +26,8 @@ public class ScreenGame implements Screen {
     public SpriteBatch batch;
     public OrthographicCamera camera;
     public Vector3 touch;
-    public BitmapFont font;
+    public BitmapFont font90;
+    public BitmapFont font50;
 
     Texture imgJoystick;
     Texture imgBG;
@@ -58,7 +59,8 @@ public class ScreenGame implements Screen {
         batch = main.batch;
         camera = main.camera;
         touch = main.touch;
-        font = main.font90yellow;
+        font90 = main.font90yellow;
+        font50 = main.font50yellow;
 
         imgJoystick = new Texture("joystick.png");
         imgBG = new Texture("bg0.jpg");
@@ -89,7 +91,7 @@ public class ScreenGame implements Screen {
         sndExplosion = Gdx.audio.newSound(Gdx.files.internal("explosion.mp3"));
         sndBlaster = Gdx.audio.newSound(Gdx.files.internal("blaster.mp3"));
 
-        btnBack = new SpaceButton(font, "x", 850, 1600);
+        btnBack = new SpaceButton(font50, "X", 850, 1590);
 
         space[0] = new Space(0, 0);
         space[1] = new Space(0, SCR_HEIGHT);
@@ -188,13 +190,15 @@ public class ScreenGame implements Screen {
             batch.draw(imgFragment[4][i], 100, i*SCR_HEIGHT/25, SCR_HEIGHT/25, SCR_HEIGHT/25);
         }*/
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
-        font.draw(batch, "score:"+main.player.score, 10, 1595);
+        font50.draw(batch, "score:"+main.player.score, 10, 1590);
         if(gameOver) {
-            font.draw(batch, "GAME OVER", 0, 1200, SCR_WIDTH, Align.center, true);
+            font90.draw(batch, "GAME OVER", 0, 1200, SCR_WIDTH, Align.center, true);
+            font50.draw(batch, "score", 400, 1080, 200, Align.right, false);
+            font50.draw(batch, "kills", 550, 1080, 200, Align.right, false);
             for (int i = 0; i < players.length; i++) {
-                font.draw(batch, players[i].name, 200, 1000 - 70*i);
-                font.draw(batch, ""+players[i].score, 600, 1000 - 70*i);
-                font.draw(batch, ""+players[i].kills, 700, 1000 - 70*i);
+                font50.draw(batch, players[i].name, 150, 1000 - 70*i);
+                font50.draw(batch, ""+players[i].score, 400, 1000 - 70*i, 200, Align.right, false);
+                font50.draw(batch, ""+players[i].kills, 550, 1000 - 70*i, 200, Align.right, false);
             }
         }
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
