@@ -95,7 +95,7 @@ public class ScreenGame implements Screen {
 
         space[0] = new Space(0, 0);
         space[1] = new Space(0, SCR_HEIGHT);
-        ship = new Ship(SCR_WIDTH/2, 200);
+
         for (int i = 0; i < players.length; i++) {
             players[i] = new Player();
         }
@@ -105,6 +105,7 @@ public class ScreenGame implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(new SpaceInputProcessor());
+        gameStart();
     }
 
     @Override
@@ -256,6 +257,16 @@ public class ScreenGame implements Screen {
         }
     }
 
+    private void gameStart(){
+        ship = new Ship(SCR_WIDTH/2, 200);
+        gameOver = false;
+        main.player.score = 0;
+        main.player.kills = 0;
+        enemies.clear();
+        fragments.clear();
+        shots.clear();
+    }
+
     private void gameOver(){
         if(isSound) sndExplosion.play();
         spawnFragments(ship);
@@ -305,18 +316,7 @@ public class ScreenGame implements Screen {
             p.time = 0;
         }
     }
-
-    private void gameRestart(){
-        gameState = PLAY_GAME;
-        counterInsects = 0;
-        for (int i = 0; i < wasp.length; i++) {
-            wasp[i] = new Wasp(SPAWN_WASP_X, SPAWN_WASP_Y, imgWasp, sndWasp);
-        }
-        for (int i = 0; i < trump.length; i++) {
-            trump[i] = new Trump(SPAWN_TRUMP_X, SPAWN_TRUMP_Y, imgTrump, sndTrump);
-        }
-        timeStartGame = TimeUtils.millis();
-    }*/
+*/
 
     class SpaceInputProcessor implements InputProcessor{
 

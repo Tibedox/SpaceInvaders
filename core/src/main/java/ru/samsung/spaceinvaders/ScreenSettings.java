@@ -41,11 +41,12 @@ public class ScreenSettings implements Screen {
         font90yellow = main.font90yellow;
         font90gray = main.font90gray;
         font50yellow = main.font50yellow;
-        keyboard = new InputKeyboard(font50yellow, SCR_WIDTH, SCR_HEIGHT/2, 12);
+        keyboard = new InputKeyboard(font50yellow, SCR_WIDTH, SCR_HEIGHT/2, 7);
 
         imgBG = new Texture("bg2.jpg");
 
-        btnPlayerName = new SpaceButton(font90yellow, "Name: "+main.player.name, 100, 1250);
+        loadSettings();
+        btnPlayerName = new SpaceButton(font90yellow, "Name:"+main.player.name, 100, 1250);
         btnControls = new SpaceButton(font90yellow, "Controls", 100, 1100);
         btnScreen = new SpaceButton(getFont(SCREEN), "Screen", 200, 1000);
         btnJoystick = new SpaceButton(getFont(JOYSTICK), joystickBtnText(), 200, 900);
@@ -69,7 +70,7 @@ public class ScreenSettings implements Screen {
             if(keyboard.isKeyboardShow) {
                 if (keyboard.touch(touch)) {
                     main.player.name = keyboard.getText();
-                    btnPlayerName.setText("Name: "+main.player.name);
+                    btnPlayerName.setText("Name:"+main.player.name);
                 }
             } else {
                 if (btnPlayerName.hit(touch)) {
@@ -169,8 +170,17 @@ public class ScreenSettings implements Screen {
         return (controls == type)? font90yellow : font90gray;
     }
 
+    private void loadSettings() {
+        Preferences prefs = Gdx.app.getPreferences("SpaceInvadersSettings");
+        main.player.name = prefs.getString("name", "Noname");
+        controls = prefs.getInteger("controls", SCREEN);
+        main.joystick.setSide(prefs.getBoolean("joystick", RIGHT));
+        isSound = prefs.getBoolean("sound", true);
+    }
+
     private void saveSettings() {
         Preferences prefs = Gdx.app.getPreferences("SpaceInvadersSettings");
+        prefs.putString("name", main.player.name);
         prefs.putInteger("controls", controls);
         prefs.putBoolean("joystick", main.joystick.side);
         prefs.putBoolean("sound", isSound);

@@ -46,7 +46,7 @@ public class Main extends Game {
         screenSettings = new ScreenSettings(this);
         screenLeaderBoard = new ScreenLeaderBoard(this);
         screenAbout = new ScreenAbout(this);
-        setScreen(screenGame);
+        setScreen(screenMenu);
     }
 
     @Override

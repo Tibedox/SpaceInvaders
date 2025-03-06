@@ -41,8 +41,6 @@ public class ScreenMenu implements Screen {
         btnLeaderBoard = new SpaceButton(font, "LeaderBoard", 250, 800);
         btnAbout = new SpaceButton(font, "About", 250, 650);
         btnExit = new SpaceButton(font, "Exit", 250, 500);
-
-        loadSettings();
     }
 
     @Override
@@ -110,12 +108,5 @@ public class ScreenMenu implements Screen {
     @Override
     public void dispose() {
         imgBG.dispose();
-    }
-
-    private void loadSettings() {
-        Preferences prefs = Gdx.app.getPreferences("SpaceInvadersSettings");
-        controls = prefs.getInteger("controls");
-        main.joystick.setSide(prefs.getBoolean("joystick"));
-        isSound = prefs.getBoolean("sound");
     }
 }
