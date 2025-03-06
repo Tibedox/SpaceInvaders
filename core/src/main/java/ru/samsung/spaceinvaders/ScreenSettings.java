@@ -1,7 +1,6 @@
 package ru.samsung.spaceinvaders;
 
 import static ru.samsung.spaceinvaders.Main.*;
-import static ru.samsung.spaceinvaders.Main.controls;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -15,15 +14,18 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 
 public class ScreenSettings implements Screen {
-    Main main;
+    private final Main main;
 
     public SpriteBatch batch;
     public OrthographicCamera camera;
     public Vector3 touch;
     public BitmapFont font90yellow, font90gray;
+    public BitmapFont font50yellow;
+    private InputKeyboard keyboard;
 
-    Texture imgBG;
+    private final Texture imgBG;
 
+    SpaceButton btnPlayerName;
     SpaceButton btnControls;
     SpaceButton btnScreen;
     SpaceButton btnJoystick;
@@ -38,14 +40,17 @@ public class ScreenSettings implements Screen {
         touch = main.touch;
         font90yellow = main.font90yellow;
         font90gray = main.font90gray;
+        font50yellow = main.font50yellow;
+        keyboard = new InputKeyboard(font50yellow, SCR_WIDTH, SCR_HEIGHT/2, 12);
 
         imgBG = new Texture("bg2.jpg");
 
-        btnControls = new SpaceButton(font90yellow, "Controls", 100, 1200);
-        btnScreen = new SpaceButton(getFont(SCREEN), "Screen", 200, 1100);
-        btnJoystick = new SpaceButton(getFont(JOYSTICK), joystickBtnText(), 200, 1000);
-        btnAccelerometer = new SpaceButton(getFont(ACCELEROMETER), "Accelerometer", 200, 900);
-        btnSound = new SpaceButton(font90yellow, soundBtnText(), 100, 750);
+        btnPlayerName = new SpaceButton(font90yellow, "Name: "+main.player.name, 100, 1250);
+        btnControls = new SpaceButton(font90yellow, "Controls", 100, 1100);
+        btnScreen = new SpaceButton(getFont(SCREEN), "Screen", 200, 1000);
+        btnJoystick = new SpaceButton(getFont(JOYSTICK), joystickBtnText(), 200, 900);
+        btnAccelerometer = new SpaceButton(getFont(ACCELEROMETER), "Accelerometer", 200, 800);
+        btnSound = new SpaceButton(font90yellow, soundBtnText(), 100, 650);
         btnBack = new SpaceButton(font90yellow, "Back", 150);
     }
 
@@ -61,33 +66,41 @@ public class ScreenSettings implements Screen {
             touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touch);
 
-            if(btnScreen.hit(touch)){
-                controls = SCREEN;
-                selectControls();
-            }
-            if(btnJoystick.hit(touch)){
-                if(controls == JOYSTICK){
-                    main.joystick.setSide(!main.joystick.side);
-                    btnJoystick.setText(joystickBtnText());
+            if(keyboard.isKeyboardShow) {
+                if (keyboard.touch(touch)) {
+                    main.player.name = keyboard.getText();
+                    btnPlayerName.setText("Name: "+main.player.name);
                 }
-                else {
-                    controls = JOYSTICK;
+            } else {
+                if (btnPlayerName.hit(touch)) {
+                    keyboard.start();
                 }
-                selectControls();
-            }
-            if(btnSound.hit(touch)){
-                isSound = !isSound;
-                btnSound.setText(soundBtnText());
-            }
-            if(btnAccelerometer.hit(touch)){
-                if (Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer)) {
-                    controls = ACCELEROMETER;
+                if (btnScreen.hit(touch)) {
+                    controls = SCREEN;
                     selectControls();
                 }
-            }
-
-            if(btnBack.hit(touch)){
-                main.setScreen(main.screenMenu);
+                if (btnJoystick.hit(touch)) {
+                    if (controls == JOYSTICK) {
+                        main.joystick.setSide(!main.joystick.side);
+                        btnJoystick.setText(joystickBtnText());
+                    } else {
+                        controls = JOYSTICK;
+                    }
+                    selectControls();
+                }
+                if (btnAccelerometer.hit(touch)) {
+                    if (Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer)) {
+                        controls = ACCELEROMETER;
+                        selectControls();
+                    }
+                }
+                if (btnSound.hit(touch)) {
+                    isSound = !isSound;
+                    btnSound.setText(soundBtnText());
+                }
+                if (btnBack.hit(touch)) {
+                    main.setScreen(main.screenMenu);
+                }
             }
         }
 
@@ -96,12 +109,14 @@ public class ScreenSettings implements Screen {
         batch.begin();
         batch.draw(imgBG, 0, 0, SCR_WIDTH, SCR_HEIGHT);
         font90yellow.draw(batch, "Settings", 0, 1500, SCR_WIDTH, Align.center, true);
+        btnPlayerName.font.draw(batch, btnPlayerName.text, btnPlayerName.x, btnPlayerName.y);
         btnControls.font.draw(batch, btnControls.text, btnControls.x, btnControls.y);
         btnScreen.font.draw(batch, btnScreen.text, btnScreen.x, btnScreen.y);
         btnJoystick.font.draw(batch, btnJoystick.text, btnJoystick.x, btnJoystick.y);
         btnAccelerometer.font.draw(batch, btnAccelerometer.text, btnAccelerometer.x, btnAccelerometer.y);
         btnSound.font.draw(batch, btnSound.text, btnSound.x, btnSound.y);
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
+        keyboard.draw(batch);
         batch.end();
     }
 
@@ -128,6 +143,7 @@ public class ScreenSettings implements Screen {
     @Override
     public void dispose() {
         imgBG.dispose();
+        keyboard.dispose();
     }
 
     void selectControls(){
