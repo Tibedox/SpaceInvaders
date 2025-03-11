@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 
 public class ScreenAbout implements Screen {
     Main main;
@@ -30,9 +31,9 @@ public class ScreenAbout implements Screen {
         touch = main.touch;
         font = main.font90yellow;
 
-        imgBG = new Texture("bg4.jpg");
+        imgBG = new Texture("bg3.jpg");
 
-        btnBack = new SpaceButton(font, "Back", 350, 300);
+        btnBack = new SpaceButton(font, "Back", 150);
     }
 
     @Override
@@ -56,7 +57,7 @@ public class ScreenAbout implements Screen {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         batch.draw(imgBG, 0, 0, SCR_WIDTH, SCR_HEIGHT);
-        font.draw(batch, "About", 350, 1400);
+        font.draw(batch, "About", 0, 1500, SCR_WIDTH, Align.center, true);
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
     }

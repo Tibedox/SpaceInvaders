@@ -1,7 +1,8 @@
 package ru.samsung.spaceinvaders;
 
-import static ru.samsung.spaceinvaders.Main.SCR_HEIGHT;
-import static ru.samsung.spaceinvaders.Main.SCR_WIDTH;
+
+
+import static ru.samsung.spaceinvaders.Main.*;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.TimeUtils;

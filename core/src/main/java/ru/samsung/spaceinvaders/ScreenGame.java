@@ -291,7 +291,7 @@ public class ScreenGame implements Screen {
         }
     }
 
-    private void saveTableOfRecords(){
+    public void saveTableOfRecords(){
         Preferences prefs = Gdx.app.getPreferences("SpaceInvadersLeaderBoard");
         for (int i = 0; i < players.length; i++) {
             prefs.putString("name"+i, players[i].name);
@@ -309,14 +309,14 @@ public class ScreenGame implements Screen {
             players[i].kills = prefs.getInteger("kills"+i, 0);
         }
     }
-/*
-    private void clearTableOfRecords(){
-        for (Player p : player) {
+
+    public void clearTableOfRecords(){
+        for (Player p : players) {
             p.name = "Noname";
-            p.time = 0;
+            p.score = 0;
+            p.kills = 0;
         }
     }
-*/
 
     class SpaceInputProcessor implements InputProcessor{
 
