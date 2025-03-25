@@ -53,6 +53,7 @@ public class ScreenLeaderBoard implements Screen {
         // Устанавливаем желаемую частоту кадров
         Gdx.graphics.setVSync(false); // Отключаем вертикальную синхронизацию
         Gdx.graphics.setForegroundFPS(10); // Например, ставим 30 FPS
+        isGlobal = false;
     }
 
     @Override
