@@ -219,7 +219,7 @@ public class ScreenGame implements Screen {
             font50.draw(batch, "score", 400, 1080, 200, Align.right, false);
             font50.draw(batch, "kills", 550, 1080, 200, Align.right, false);
             if(isGlobal){
-                for (int i = 0; i < players.length; i++) {
+                for (int i = 0; i < Math.min(db.size(), players.length); i++) {
                     font50.draw(batch, db.get(i).name, 150, 1000 - 70 * i);
                     font50.draw(batch, "" + db.get(i).score, 400, 1000 - 70 * i, 200, Align.right, false);
                     font50.draw(batch, "" + db.get(i).kills, 550, 1000 - 70 * i, 200, Align.right, false);
