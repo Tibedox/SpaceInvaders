@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 
+import java.util.List;
+
 public class ScreenLeaderBoard implements Screen {
     Main main;
 
@@ -28,6 +30,7 @@ public class ScreenLeaderBoard implements Screen {
     SpaceButton btnBack;
     Player[] players;
     private boolean isGlobal;
+    private List<DataFromDB> db;
 
     public ScreenLeaderBoard(Main main) {
         this.main = main;
@@ -62,13 +65,13 @@ public class ScreenLeaderBoard implements Screen {
             if(btnSwitcher.hit(touch)){
                 isGlobal = !isGlobal;
                 if(isGlobal) {
-                    //main.screenGame.loadTableFromDB();
+                    main.screenGame.loadTableFromDB();
                     btnSwitcher.setText("Global");
                 } else {
                     btnSwitcher.setText("Local");
                 }
             }
-            if(btnClear.hit(touch)){
+            if(btnClear.hit(touch) && !isGlobal){
                 main.screenGame.clearTableOfRecords();
                 main.screenGame.saveTableOfRecords();
             }
@@ -85,10 +88,20 @@ public class ScreenLeaderBoard implements Screen {
         btnSwitcher.font.draw(batch, btnSwitcher.text, btnSwitcher.x, btnSwitcher.y);
         font50.draw(batch, "score", 400, 1180, 200, Align.right, false);
         font50.draw(batch, "kills", 550, 1180, 200, Align.right, false);
-        for (int i = 0; i < players.length; i++) {
-            font50.draw(batch, players[i].name, 150, 1100 - 70*i);
-            font50.draw(batch, ""+players[i].score, 400, 1100 - 70*i, 200, Align.right, false);
-            font50.draw(batch, ""+players[i].kills, 550, 1100 - 70*i, 200, Align.right, false);
+
+        if(isGlobal){
+            db = main.screenGame.db;
+            for (int i = 0; i < Math.min(db.size(), players.length); i++) {
+                font50.draw(batch, db.get(i).name, 150, 1100 - 70 * i);
+                font50.draw(batch, "" + db.get(i).score, 400, 1100 - 70 * i, 200, Align.right, false);
+                font50.draw(batch, "" + db.get(i).kills, 550, 1100 - 70 * i, 200, Align.right, false);
+            }
+        } else {
+            for (int i = 0; i < players.length; i++) {
+                font50.draw(batch, players[i].name, 150, 1100 - 70 * i);
+                font50.draw(batch, "" + players[i].score, 400, 1100 - 70 * i, 200, Align.right, false);
+                font50.draw(batch, "" + players[i].kills, 550, 1100 - 70 * i, 200, Align.right, false);
+            }
         }
         btnClear.font.draw(batch, btnClear.text, btnClear.x, btnClear.y);
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
