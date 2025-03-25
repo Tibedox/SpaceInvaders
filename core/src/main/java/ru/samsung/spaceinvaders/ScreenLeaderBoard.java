@@ -27,6 +27,7 @@ public class ScreenLeaderBoard implements Screen {
     SpaceButton btnClear;
     SpaceButton btnBack;
     Player[] players;
+    private boolean isGlobal;
 
     public ScreenLeaderBoard(Main main) {
         this.main = main;
@@ -58,6 +59,15 @@ public class ScreenLeaderBoard implements Screen {
             touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touch);
 
+            if(btnSwitcher.hit(touch)){
+                isGlobal = !isGlobal;
+                if(isGlobal) {
+                    //main.screenGame.loadTableFromDB();
+                    btnSwitcher.setText("Global");
+                } else {
+                    btnSwitcher.setText("Local");
+                }
+            }
             if(btnClear.hit(touch)){
                 main.screenGame.clearTableOfRecords();
                 main.screenGame.saveTableOfRecords();

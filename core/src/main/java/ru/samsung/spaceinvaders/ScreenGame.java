@@ -17,8 +17,16 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ScreenGame implements Screen {
     Main main;
@@ -41,6 +49,7 @@ public class ScreenGame implements Screen {
     Sound sndExplosion;
     Sound sndBlaster;
 
+    SpaceButton btnSwitcher;
     SpaceButton btnBack;
 
     Space[] space = new Space[2];
@@ -52,7 +61,9 @@ public class ScreenGame implements Screen {
     private long timeLastSpawnEnemy, timeIntervalSpawnEnemy = 2000;
     private long timeLastShoot, timeShootInterval = 1000;
     private boolean gameOver;
+    private boolean isGlobal;
     public Player[] players = new Player[10];
+    public List<DataFromDB> db = new ArrayList<>();
 
     public ScreenGame(Main main) {
         this.main = main;
@@ -91,6 +102,7 @@ public class ScreenGame implements Screen {
         sndExplosion = Gdx.audio.newSound(Gdx.files.internal("explosion.mp3"));
         sndBlaster = Gdx.audio.newSound(Gdx.files.internal("blaster.mp3"));
 
+        btnSwitcher = new SpaceButton(font90, "local", 1200);
         btnBack = new SpaceButton(font50, "X", 850, 1590);
 
         space[0] = new Space(0, 0);
@@ -115,6 +127,15 @@ public class ScreenGame implements Screen {
             touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touch);
 
+            if(gameOver && btnSwitcher.hit(touch)){
+                isGlobal = !isGlobal;
+                if(isGlobal) {
+                    loadTableFromDB();
+                    btnSwitcher.setText("global");
+                } else {
+                    btnSwitcher.setText("local");
+                }
+            }
             if(btnBack.hit(touch.x, touch.y)){
                 main.setScreen(main.screenMenu);
             }
@@ -193,13 +214,22 @@ public class ScreenGame implements Screen {
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
         font50.draw(batch, "score:"+main.player.score, 10, 1590);
         if(gameOver) {
-            font90.draw(batch, "GAME OVER", 0, 1200, SCR_WIDTH, Align.center, true);
+            font90.draw(batch, "GAME OVER", 0, 1300, SCR_WIDTH, Align.center, true);
+            btnSwitcher.font.draw(batch, btnSwitcher.text, btnSwitcher.x, btnSwitcher.y);
             font50.draw(batch, "score", 400, 1080, 200, Align.right, false);
             font50.draw(batch, "kills", 550, 1080, 200, Align.right, false);
-            for (int i = 0; i < players.length; i++) {
-                font50.draw(batch, players[i].name, 150, 1000 - 70*i);
-                font50.draw(batch, ""+players[i].score, 400, 1000 - 70*i, 200, Align.right, false);
-                font50.draw(batch, ""+players[i].kills, 550, 1000 - 70*i, 200, Align.right, false);
+            if(isGlobal){
+                for (int i = 0; i < players.length; i++) {
+                    font50.draw(batch, db.get(i).name, 150, 1000 - 70 * i);
+                    font50.draw(batch, "" + db.get(i).score, 400, 1000 - 70 * i, 200, Align.right, false);
+                    font50.draw(batch, "" + db.get(i).kills, 550, 1000 - 70 * i, 200, Align.right, false);
+                }
+            } else {
+                for (int i = 0; i < players.length; i++) {
+                    font50.draw(batch, players[i].name, 150, 1000 - 70 * i);
+                    font50.draw(batch, "" + players[i].score, 400, 1000 - 70 * i, 200, Align.right, false);
+                    font50.draw(batch, "" + players[i].kills, 550, 1000 - 70 * i, 200, Align.right, false);
+                }
             }
         }
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
@@ -260,6 +290,7 @@ public class ScreenGame implements Screen {
     private void gameStart(){
         ship = new Ship(SCR_WIDTH/2, 200);
         gameOver = false;
+        isGlobal = false;
         main.player.score = 0;
         main.player.kills = 0;
         enemies.clear();
@@ -277,6 +308,7 @@ public class ScreenGame implements Screen {
             sortTableOfRecords();
             saveTableOfRecords();
         }
+        saveResultToDB();
     }
 
     private void sortTableOfRecords(){
@@ -316,6 +348,59 @@ public class ScreenGame implements Screen {
             p.score = 0;
             p.kills = 0;
         }
+    }
+
+    public void sortTableFromDB(){
+        class Cmp implements Comparator<DataFromDB>{
+            @Override
+            public int compare(DataFromDB o1, DataFromDB o2) {
+                return o2.score-o1.score;
+            }
+        }
+
+        db.sort(new Cmp());
+    }
+
+    public void loadTableFromDB(){
+        Retrofit retrofit = new Retrofit.Builder()
+            .baseUrl("https://sch120.ru")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+        MyApi api = retrofit.create(MyApi.class);
+
+        api.sendToServer("leaderboard").enqueue(new Callback<List<DataFromDB>>() {
+            @Override
+            public void onResponse(Call<List<DataFromDB>> call, Response<List<DataFromDB>> response) {
+                db = response.body();
+                sortTableFromDB();
+            }
+
+            @Override
+            public void onFailure(Call<List<DataFromDB>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void saveResultToDB(){
+        Retrofit retrofit = new Retrofit.Builder()
+            .baseUrl("https://sch120.ru")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+        MyApi api = retrofit.create(MyApi.class);
+
+        api.sendToServer(main.player.name, main.player.score, main.player.kills).enqueue(new Callback<List<DataFromDB>>() {
+            @Override
+            public void onResponse(Call<List<DataFromDB>> call, Response<List<DataFromDB>> response) {
+                db = response.body();
+                sortTableFromDB();
+            }
+
+            @Override
+            public void onFailure(Call<List<DataFromDB>> call, Throwable t) {
+
+            }
+        });
     }
 
     class SpaceInputProcessor implements InputProcessor{
